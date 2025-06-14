@@ -30,15 +30,26 @@ struct PhotosGridView: View {
                     
                 } else {
                     LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(Array(viewModel.selectedImages.enumerated()), id: \.offset) { idx, img in
+                        ForEach($viewModel.selectedImages, id: \.id) { $selectableImage in
                             withAnimation{
-                                GridItemView(image: img)
+                                GridItemView(selectableImage: $selectableImage)
+                                    .environmentObject(viewModel)
                             }
                         }
                     }
                 }
             }
-            .toolbar{
+            .toolbar(){
+                
+                PhotoGridToolbar.toolbarItems(
+                    selectedImagesCount: viewModel.countImagesToRemove,
+                    isSelectionMode: $viewModel.isGridInSelectionMode,
+                    onInitSelectableImages: {
+                    viewModel.initSelectableImages()
+                }, onImagesRemoved: {
+                    viewModel.removeSelectedImages()
+                })
+                
                 ToolbarItem(placement: .principal){
                     Text("Selected Photos").bold().font(.title2)
                 }

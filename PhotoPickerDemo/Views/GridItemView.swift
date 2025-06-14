@@ -9,18 +9,36 @@ import SwiftUICore
 import SwiftUI
 
 struct GridItemView: View {
-    let image: UIImage
+    
+    @EnvironmentObject var viewModel: PhotoPickerViewModel
+    
+    @Binding var selectableImage: SelectableImage
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topTrailing) {
             GeometryReader { gr in
-                Image(uiImage: image)
+                Image(uiImage: selectableImage.image)
                     .resizable()
                     .transition(.opacity)
                     .scaledToFill()
                     .frame(width: UIScreen.main.bounds.width/3, height: UIScreen.main.bounds.width/3)
                     .clipped()
                     .contentShape(Path(CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width/3, height: UIScreen.main.bounds.width/3)))
+                    .background(
+                        selectableImage.isSelected && viewModel.isGridInSelectionMode
+                        ? Color.blue.opacity(0.2)
+                        : Color.clear
+                    )
+                    .onTapGesture {
+                        if viewModel.isGridInSelectionMode {
+                            selectableImage.isSelected.toggle()
+                        }
+                    }
+                if selectableImage.isSelected && viewModel.isGridInSelectionMode {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.blue)
+                        .padding(6)
+                }
             }
         }
         .clipped()

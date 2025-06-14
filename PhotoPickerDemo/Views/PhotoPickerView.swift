@@ -58,7 +58,6 @@ struct PhotoPickerView: View {
                 ToolbarItem(placement: .principal){
                     Text("Photo Picker").bold().font(.title2)
                 }
-                
             }
             .sheet(isPresented: $showPhotoPicker) {
                 if(viewModel.sourceType == .camera){
